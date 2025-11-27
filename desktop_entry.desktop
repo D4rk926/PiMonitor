@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=PiMonitor
 Comment=Monitor your Raspberry Pi
-Exec=/home/$USER/PiMonitor-main/PiMonitor.py
-Icon=/home/$USER/PiMonitor-main/icon.png
-Terminal=true
+Exec=python3 /home/%u/PiMonitor-main/PiMonitor.py
+Icon=/home/%u/PiMonitor-main/icon.png
+Terminal=false
 Type=Application
 Categories=Utility;

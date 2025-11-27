@@ -1,32 +1,60 @@
 #!/bin/bash
 
-USER_HOME="/home/$USER"
-ZIP_URL="https://github.com/D4rk926/PiMonitor/archive/refs/heads/main.zip"
+# ----------------------------
+# PiMonitor Auto Installer
+# ----------------------------
 
-# Letöltés
-cd "$USER_HOME/Downloads" || exit
-curl -L $ZIP_URL -o PiMonitor.zip
+# Aktuális felhasználó
+USER_HOME=$(eval echo "~$USER")
 
-# Kicsomagolás
-unzip -o PiMonitor.zip -d "$USER_HOME"
-cd "$USER_HOME/PiMonitor-main" || exit
+# Alap könyvtárak
+DOWNLOADS_DIR="$USER_HOME/Downloads"
+INSTALL_DIR="$USER_HOME/PiMonitor-main"
+DESKTOP_FILE="$INSTALL_DIR/PiMonitor.desktop"
+DESKTOP_SHORTCUT="$USER_HOME/Desktop/PiMonitor.desktop"
 
-# Telepítés
-sudo apt update && sudo apt upgrade -y
-sudo apt install python3 python3-pip -y
-pip3 install -r requirements.txt
-chmod +x PiMonitor.py
+# Ellenőrizzük, hogy létezik-e a telepítendő mappa
+if [ ! -d "$DOWNLOADS_DIR/PiMonitor-main" ]; then
+    echo "Hiba: PiMonitor-main mappa nem található a Downloads könyvtárban!"
+    exit 1
+fi
 
-# Desktop shortcut frissítése a felhasználóra
-DESKTOP_FILE="$USER_HOME/PiMonitor-main/desktop_entry.desktop"
-sed -i "s|\$USER|$USER|g" "$DESKTOP_FILE"
+# Ha már van korábbi telepítés, töröljük
+if [ -d "$INSTALL_DIR" ]; then
+    echo "Korábbi PiMonitor telepítés törlése..."
+    rm -rf "$INSTALL_DIR"
+fi
 
-mkdir -p "$USER_HOME/.local/share/applications"
-cp "$DESKTOP_FILE" "$USER_HOME/.local/share/applications/"
-cp "$DESKTOP_FILE" "$USER_HOME/Desktop/"
-chmod +x "$USER_HOME/Desktop/desktop_entry.desktop"
+# Áthelyezés home könyvtárba
+mv "$DOWNLOADS_DIR/PiMonitor-main" "$INSTALL_DIR"
 
-# ZIP és felesleges fájlok törlése
-rm -f "$USER_HOME/Downloads/PiMonitor.zip"
+# Ellenőrizzük, hogy a PiMonitor.py futtatható
+chmod +x "$INSTALL_DIR/PiMonitor.py"
 
-echo "Telepítés kész! PiMonitor elérhető az asztalon és a home könyvtárban."
+# .desktop fájl elkészítése / %u cseréje
+if [ -f "$DESKTOP_FILE" ]; then
+    sed -i "s|%u|$USER|g" "$DESKTOP_FILE"
+else
+    # Ha nincs, készítsünk egy alap desktop fájlt
+    cat <<EOL > "$DESKTOP_FILE"
+[Desktop Entry]
+Name=PiMonitor
+Comment=Monitor your Raspberry Pi
+Exec=python3 $INSTALL_DIR/PiMonitor.py
+Icon=$INSTALL_DIR/icon.png
+Terminal=false
+Type=Application
+Categories=Utility;
+EOL
+fi
+
+# Másoljuk a Desktop-ra a shortcutot
+cp "$DESKTOP_FILE" "$DESKTOP_SHORTCUT"
+chmod +x "$DESKTOP_SHORTCUT"
+
+# Töröljük a ZIP-et, ha van
+if [ -f "$DOWNLOADS_DIR/PiMonitor-main.zip" ]; then
+    rm "$DOWNLOADS_DIR/PiMonitor-main.zip"
+fi
+
+echo "Dowload is ready! Now you can use Pi Monitor by click the application and press execute."

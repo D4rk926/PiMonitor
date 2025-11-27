@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pi Monitor
+Exec=python3 /home/pi/PiMonitor/PiMonitor.py
+Icon=/home/pi/PiMonitor/icon.png
+Terminal=false
+Categories=Utility;

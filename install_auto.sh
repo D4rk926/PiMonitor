@@ -7,17 +7,10 @@
 # Aktuális felhasználó
 USER_HOME=$(eval echo "~$USER")
 
-# Alap könyvtárak
-DOWNLOADS_DIR="$USER_HOME/Downloads"
+# Telepítési könyvtár
 INSTALL_DIR="$USER_HOME/PiMonitor-main"
 DESKTOP_FILE="$INSTALL_DIR/PiMonitor.desktop"
 DESKTOP_SHORTCUT="$USER_HOME/Desktop/PiMonitor.desktop"
-
-# Ellenőrizzük, hogy létezik-e a telepítendő mappa
-if [ ! -d "$DOWNLOADS_DIR/PiMonitor-main" ]; then
-    echo "Hiba: PiMonitor-main mappa nem található a Downloads könyvtárban!"
-    exit 1
-fi
 
 # Ha már van korábbi telepítés, töröljük
 if [ -d "$INSTALL_DIR" ]; then
@@ -25,17 +18,23 @@ if [ -d "$INSTALL_DIR" ]; then
     rm -rf "$INSTALL_DIR"
 fi
 
-# Áthelyezés home könyvtárba
-mv "$DOWNLOADS_DIR/PiMonitor-main" "$INSTALL_DIR"
+# Git clone a legfrissebb verzióból
+echo "Letöltés a GitHub-ról..."
+git clone https://github.com/D4rk926/PiMonitor.git "$INSTALL_DIR"
 
-# Ellenőrizzük, hogy a PiMonitor.py futtatható
+# Ellenőrizzük, hogy sikerült-e a clone
+if [ ! -d "$INSTALL_DIR" ]; then
+    echo "Hiba: Nem sikerült letölteni a PiMonitor-t a GitHub-ról!"
+    exit 1
+fi
+
+# Futtathatóvá tesszük a PiMonitor.py-t
 chmod +x "$INSTALL_DIR/PiMonitor.py"
 
-# .desktop fájl elkészítése / %u cseréje
+# .desktop fájl létrehozása / %u cseréje
 if [ -f "$DESKTOP_FILE" ]; then
     sed -i "s|%u|$USER|g" "$DESKTOP_FILE"
 else
-    # Ha nincs, készítsünk egy alap desktop fájlt
     cat <<EOL > "$DESKTOP_FILE"
 [Desktop Entry]
 Name=PiMonitor
@@ -48,13 +47,8 @@ Categories=Utility;
 EOL
 fi
 
-# Másoljuk a Desktop-ra a shortcutot
+# Desktop shortcut létrehozása
 cp "$DESKTOP_FILE" "$DESKTOP_SHORTCUT"
 chmod +x "$DESKTOP_SHORTCUT"
-
-# Töröljük a ZIP-et, ha van
-if [ -f "$DOWNLOADS_DIR/PiMonitor-main.zip" ]; then
-    rm "$DOWNLOADS_DIR/PiMonitor-main.zip"
-fi
 
 echo "Dowload is ready! Now you can use Pi Monitor by click the application and press execute."

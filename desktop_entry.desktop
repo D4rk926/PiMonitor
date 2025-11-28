@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=PiMonitor
+Name=Pi Monitor
 Comment=Monitor your Raspberry Pi
 Exec=python3 /home/%u/PiMonitor-main/PiMonitor.py
 Icon=/home/%u/PiMonitor-main/icon.png

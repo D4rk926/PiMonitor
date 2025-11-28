@@ -6,6 +6,7 @@
 
 # Aktuális felhasználó HOME könyvtára
 USER_HOME=$(eval echo "~$USER")
+DOWNLOADS_DIR="$USER_HOME/Downloads"
 
 # Telepítési könyvtár
 INSTALL_DIR="$USER_HOME/PiMonitor-main"
@@ -18,6 +19,11 @@ if [ -d "$INSTALL_DIR" ]; then
     rm -rf "$INSTALL_DIR"
 fi
 
+# Download előtti ZIP-ek törlése a Downloads mappából
+echo "Removing old PiMonitor zip files from Downloads..."
+rm -f "$DOWNLOADS_DIR"/PiMonitor*.zip
+rm -f "$DOWNLOADS_DIR"/PiMonitor*.tar.gz
+
 # Git clone a legfrissebb verzióból
 echo "Downloading PiMonitor from GitHub..."
 git clone https://github.com/D4rk926/PiMonitor.git "$INSTALL_DIR"
@@ -28,7 +34,7 @@ if [ ! -d "$INSTALL_DIR" ]; then
     exit 1
 fi
 
-# →→→ TÖRLÉS: MINDENT törlünk a mappában, KIVÉVE a PiMonitor.py-t ←←←
+# →→→ MINDEN fájl törlése, kivéve PiMonitor.py-t ←←←
 echo "Cleaning installation folder (keeping only PiMonitor.py)..."
 
 find "$INSTALL_DIR" -mindepth 1 -maxdepth 1 ! -name "PiMonitor.py" -exec rm -rf {} \;

@@ -14,12 +14,12 @@ DESKTOP_SHORTCUT="$USER_HOME/Desktop/PiMonitor.desktop"
 
 # Ha már van korábbi telepítés, töröljük
 if [ -d "$INSTALL_DIR" ]; then
-    echo "Korábbi PiMonitor telepítés törlése..."
+    echo "PiMonitor downloading..."
     rm -rf "$INSTALL_DIR"
 fi
 
 # Git clone a legfrissebb verzióból
-echo "Letöltés a GitHub-ról..."
+echo "Downloading from GitHub..."
 git clone https://github.com/D4rk926/PiMonitor.git "$INSTALL_DIR"
 
 # Ellenőrizzük, hogy sikerült-e a clone
@@ -37,10 +37,10 @@ if [ -f "$DESKTOP_FILE" ]; then
 else
     cat <<EOL > "$DESKTOP_FILE"
 [Desktop Entry]
-Name=PiMonitor
+Name=Pi Monitor
 Comment=Monitor your Raspberry Pi
 Exec=python3 $INSTALL_DIR/PiMonitor.py
-Icon=$INSTALL_DIR/icon.png
+Icon=utilities-terminal
 Terminal=false
 Type=Application
 Categories=Utility;

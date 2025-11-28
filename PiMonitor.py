@@ -176,7 +176,7 @@ l_dev = tk.Label(page_dev, font=font_main, bg="#f2f2f2", justify="left", wraplen
                       "- System Info lists hardware and OS details.\n\n"
                       "Developer Info:\n"
                       "- Application created by D4rk.\n"
-                      "- Join our Discord server: https://discord.gg/C52wa7Kpa\n"
+                      "- Join our Discord server: https://discord.gg/CyDQssft8"
                       "- Follow on Youtube: abel3189\n"
                       "- Follow on Pinterest: belkomromy\n"
                       "- GUI is still in beta\n"
